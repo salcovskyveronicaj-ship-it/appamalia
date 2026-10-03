@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - Acompañamiento Quirúrgico</title>
+    <style>
+        :root {
+            --primary: #2C3E50;
+            --secondary: #3498DB;
+            --doctor: #8E44AD;
+            --patient: #27AE60;
+            --background: #F8F9F9;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--primary);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .header {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.2em;
+            color: #555;
+        }
+        .cards-container {
+            display: flex;
+            gap: 40px;
+            max-width: 900px;
+            width: 100%;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        @media (max-width: 768px) {
+            .cards-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .card p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: opacity 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-doctor { background-color: var(--doctor); }
+        .btn-patient { background-color: var(--patient); }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Sistema de Acompañamiento Pre y Post Quirúrgico</h1>
+        <p>Prototipo interactivo (Demo)</p>
+    </div>
+
+    <div class="cards-container">
+        <!-- Tarjeta de la Doctora -->
+        <div class="card">
+            <div class="card-icon">👩‍⚕️</div>
+            <h2>Vista de la Doctora</h2>
+            <p>Acceda al panel de gestión (CRM) para ver la lista de pacientes, revisar sus fichas clínicas, estado emocional, expectativas y progreso de los videos.</p>
+            <a href="panel_doctora.html" class="btn btn-doctor">Ingresar como Doctora</a>
+        </div>
+
+        <!-- Tarjeta del Paciente -->
+        <div class="card">
+            <div class="card-icon">🩺</div>
+            <h2>Vista del Paciente</h2>
+            <p>Acceda al portal interactivo donde el paciente inicia sesión, consume el contenido de valor específico de su cirugía y agenda su sesión de coaching.</p>
+            <a href="portal_paciente.html" class="btn btn-patient">Ingresar como Paciente</a>
+        </div>
+    </div>
+
+</body>
+</html>

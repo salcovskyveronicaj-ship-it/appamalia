@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Médico - Dra. Anestesista</title>
+    <style>
+        :root {
+            --primary: #2C3E50;
+            --secondary: #3498DB;
+            --success: #27AE60;
+            --warning: #F39C12;
+            --background: #F8F9F9;
+            --card-bg: #FFFFFF;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--primary);
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { margin: 0; font-size: 1.5em; }
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary { background-color: var(--secondary); }
+        .btn-success { background-color: var(--success); }
+        .btn-outline { background-color: transparent; border: 1px solid white; color: white; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: var(--primary);
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            color: white;
+        }
+        .badge-active { background-color: var(--success); }
+        .badge-pending { background-color: var(--warning); }
+        
+        .action-link {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .action-link:hover { text-decoration: underline; }
+
+        /* Estilos para la ventana emergente (Modal) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            align-items: center; justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            width: 600px;
+            max-width: 90%;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #888;
+        }
+        .close-btn:hover { color: var(--danger); }
+        
+        .ficha-seccion {
+            background: #f4f6f7;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--secondary);
+        }
+        .ficha-seccion h3 { margin: 0 0 8px 0; font-size: 1.1em; color: var(--primary); }
+        .ficha-seccion p { margin: 0; font-size: 0.95em; line-height: 1.5; color: #444; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Panel de Gestión Quirúrgica</h1>
+        <div>
+            <button class="btn btn-outline" onclick="alert('Cerrando sesión de la doctora')">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <h2>Directorio de Pacientes</h2>
+            <button class="btn btn-success" onclick="nuevoPaciente()">+ Cargar Nuevo Paciente</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>Estado de Pago</th>
+                    <th>Progreso (Videos)</th>
+                    <th>Próxima Sesión</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Juan Pérez</strong></td>
+                    <td><span class="badge badge-active">Suscripción Activa</span></td>
+                    <td>3/3 Vistos (100%)</td>
+                    <td>15/11/2026 - 10:00 AM</td>
+                    <td>
+                        <a class="action-link" onclick="abrirFicha('juan')">📋 Ver Ficha Clínica</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>María Gómez</strong></td>
+                    <td><span class="badge badge-active">Suscripción Activa</span></td>
+                    <td>1/2 Vistos (50%)</td>
+                    <td><em style="color:#999;">No agendado aún</em></td>
+                    <td>
+                        <a class="action-link" onclick="abrirFicha('maria')">📋 Ver Ficha Clínica</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Ventana Emergente (Modal) con los detalles solicitados -->
+    <div class="modal-overlay" id="modalFicha">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarFicha()">&times;</span>
+            <h2 id="modal-nombre" style="margin-top: 0; color: var(--primary);">Nombre del Paciente</h2>
+            <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+
+            <div class="ficha-seccion">
+                <h3>🩺 Patología</h3>
+                <p id="modal-patologia"></p>
+            </div>
+
+            <div class="ficha-seccion">
+                <h3>🔪 Intervención Quirúrgica</h3>
+                <p id="modal-intervencion"></p>
+            </div>
+
+            <div class="ficha-seccion">
+                <h3>🧠 Contexto Emocional</h3>
+                <p id="modal-emocional"></p>
+            </div>
+
+            <div class="ficha-seccion" style="border-left-color: var(--success);">
+                <h3>🎯 Expectativas de la Consulta</h3>
+                <p id="modal-expectativas"></p>
+            </div>
+
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="cerrarFicha()">Cerrar Ficha</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de datos de la doctora con la información clínica y cualitativa
+        const datosPacientes = {
+            'juan': {
+                nombre: 'Juan Pérez',
+                patologia: 'Artrosis severa en rodilla derecha con limitación funcional de 2 años de evolución.',
+                intervencion: 'Reemplazo Total de Rodilla (Artroplastia).',
+                emocional: 'Mucha ansiedad por el dolor post-operatorio. Teme perder autonomía, no poder caminar correctamente y ser una carga para su familia. Tiene problemas de insomnio recientes por la preocupación.',
+                expectativas: 'Busca herramientas de respiración para calmar la mente antes de entrar al quirófano y quiere entender exactamente cómo debe adaptar su casa para la recuperación.'
+            },
+            'maria': {
+                nombre: 'María Gómez',
+                patologia: 'Obstrucción coronaria severa detectada en estudio de rutina.',
+                intervencion: 'Cirugía Cardiovascular a corazón abierto (Bypass).',
+                emocional: 'Paciente con altísimo nivel de estrés laboral. Se muestra un poco negadora frente a la gravedad de la cirugía y busca "salir rápido" de esto. Necesita mucha contención empática para bajar su ritmo mental.',
+                expectativas: 'Quiere saber exactamente qué va a sentir al despertar de la anestesia (temor a la intubación) y busca un plan estricto para sentir que "tiene el control" de la situación.'
+            }
+        };
+
+        function nuevoPaciente() {
+            alert('Aquí se abre un formulario para ingresar todos estos datos cualitativos en la primera entrevista (patología, expectativas, contexto emocional, etc.).');
+        }
+
+        function abrirFicha(idPaciente) {
+            const paciente = datosPacientes[idPaciente];
+            
+            // Cargar los datos en el modal
+            document.getElementById('modal-nombre').innerText = "Ficha de: " + paciente.nombre;
+            document.getElementById('modal-patologia').innerText = paciente.patologia;
+            document.getElementById('modal-intervencion').innerText = paciente.intervencion;
+            document.getElementById('modal-emocional').innerText = paciente.emocional;
+            document.getElementById('modal-expectativas').innerText = paciente.expectativas;
+
+            // Mostrar el modal
+            document.getElementById('modalFicha').style.display = 'flex';
+        }
+
+        function cerrarFicha() {
+            document.getElementById('modalFicha').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
